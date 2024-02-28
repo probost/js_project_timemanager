@@ -1,0 +1,19 @@
+body{
+}
+.header{
+    border: 3px black solid;
+    height: 30px;
+    margin: 20px 0 20px 0;
+    display: flex;
+    padding: 10px 20px 10px 20px;
+}
+.main{
+    border: 3px black solid;
+    height: 400px;
+    padding: 10px 20px 10px 20px;
+
+}
+table{
+    border: 3px black solid;
+    width: 100%;
+}
