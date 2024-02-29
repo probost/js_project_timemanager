@@ -7,20 +7,24 @@
 </head>
 <body>
 <div class="header">
-    <input type="text" placeholder="zadejte text...">
+    <input class="task" type="text" placeholder="zadejte text...">
 
     <select name="project" id="project">
         <option value="1">project1</option>
         <option value="2">project2</option>
     </select>
     <p class="timer"></p>
-    <button class="startStopBtn">⏯</button>
+    <button class="startStopBtn">▶</button>
 
 </div>
 <div class="main">
-    <a href="index.html">Přehled</a>
-    <a href="index.html">Projekty</a>
+    <div class="tabs">
+        <a href="index.html">Přehled</a>
+        <a href="index.html">Projekty</a>
+    </div>
+
     <p>Dnes odpracováno <span></span></p>
+    <span><button>Nový záznam</button></span>
     <table>
         <thead>
         <tr>
@@ -34,6 +38,7 @@
         </thead>
     </table>
 </div>
-<script src="script.js"></script>
+<script src="timer.js"></script>
+<script src="task.js"></script>
 </body>
 </html>
