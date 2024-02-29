@@ -1,22 +1,44 @@
 body{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
 }
 .header{
+    height: 50px;
+    width: 60%;
     border: 3px black solid;
-    height: 30px;
-    margin: 20px 0 20px 0;
-    display: flex;
+
     padding: 10px 20px 10px 20px;
-    justify-content: flex-end;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
     input{
         width: 100%;
     }
+    .timer{
+        font-size: 2em;
+        align-self: center;
+    }
+    button{
+        min-width: 50px;
+    }
 }
 .main{
+    min-height: 400px;
+    width: 60%;
     border: 3px black solid;
-    height: 400px;
+
     padding: 10px 20px 10px 20px;
+    p{
+        font-size: 1.5em;
+        margin: 0;
+    }
 }
 table{
-    border: 3px black solid;
     width: 100%;
+    border: 3px black solid;
+    tr:nth-child(even){
+        background:lightgray;
+    }
 }
