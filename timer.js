@@ -17,6 +17,7 @@ startStopBtn.addEventListener("click", () => {
         //save 0
         savedTime = new Date().setHours(0,0,0,0);
         toggleIcon()
+        disableNewRecordBtn();
         return;
     }
     if (running) {
@@ -27,6 +28,7 @@ startStopBtn.addEventListener("click", () => {
         //save end time
         endTime = new Date();
         toggleIcon()
+        enableNewRecordBtn();
     }
 });
 let intervalId = setInterval(() => {
@@ -47,19 +49,21 @@ function toggleIcon() {
     }
 }
 function getDuration(){
-    if (running){
-        return new Date(timerTime - startTime).toLocaleTimeString('cs-cz');
-    }
+   
    return new Date(savedTime).toLocaleTimeString('cs-cz');
 }
 function getStartTime(){
-    return new Date(startTime).toLocaleTimeString('cs-cz');
+    return new Date(startTime).toLocaleString('cs-cz');
 }
 function getEndTime(){
-    if (running) {
-        return  new Date(timerTime).toLocaleTimeString('cs-cz')
-    } else{
-    return new Date(endTime).toLocaleTimeString('cs-cz');
-    }
+   
+    return new Date(endTime).toLocaleString('cs-cz');
+    
+}
+function disableNewRecordBtn(){
+    newRecordBtn.disabled = true;
+}
+function enableNewRecordBtn(){
+    newRecordBtn.disabled = false;
 }
 
