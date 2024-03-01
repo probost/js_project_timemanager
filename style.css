@@ -1,4 +1,5 @@
 body{
+    font-family: serif;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -23,7 +24,20 @@ body{
     button{
         min-width: 50px;
     }
+
 }
+.stats{
+    height: 50px;
+    padding: 0 0 10px 0;
+
+    display: flex;
+    justify-content: space-between;
+    span{
+        align-self: center;
+    }
+}
+
+
 .main{
     min-height: 400px;
     width: 60%;
@@ -34,6 +48,7 @@ body{
         font-size: 1.5em;
         margin: 0;
     }
+
 }
 table{
     width: 100%;
