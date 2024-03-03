@@ -3,17 +3,14 @@ const projectSelect = document.querySelector('#project');
 let newRecordBtn = document.querySelector('.newRecordBtn');
 const recordsTbody = document.querySelector('.recordsTbody');
 let records = [];
-//disable newRecordBtn initially
-disableNewRecordBtn()
 //load and generate html initially
-loadRecords()
-generateHtml()
+loadRecordsFromLocal()
+generateHtmlRecords()
 
 newRecordBtn.addEventListener('click', () => {
     addRecord()
-    saveRecords();
-    generateHtml();
-    disableNewRecordBtn();
+    saveRecordsToLocal();
+    generateHtmlRecords();
 })
 
 function addRecord() {
@@ -22,22 +19,22 @@ function addRecord() {
     const record = {
         task: taskInput.innerText,
         project: selectedProject,
-        start: getStartTime(),
-        end: getEndTime(),
-        total: getDuration()
+        start: getStartTimeString(),
+        end: getEndTimeString(),
+        total: getDurationString()
     }
     records.push(record);
-    saveRecords();
+    saveRecordsToLocal();
 }
 
-function saveRecords() {
+function saveRecordsToLocal() {
     //stringify array of records
     const recordsJson = JSON.stringify(records);
     //save to local storage
     localStorage.setItem('records', recordsJson);
 }
 
-function loadRecords() {
+function loadRecordsFromLocal() {
     //load from local storage
     const recordsJson = localStorage.getItem('records');
     if (recordsJson == null) {
@@ -48,7 +45,7 @@ function loadRecords() {
     records = JSON.parse(recordsJson);
 }
 
-function generateHtml() {
+function generateHtmlRecords() {
     //remove previously generated html to prevent duplication
     let allTr = document.querySelectorAll(".recordsTbody tr");
     allTr.forEach((tr) => tr.remove());
