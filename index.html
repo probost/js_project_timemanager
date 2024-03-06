@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Time manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="header">
-    <input class="task" type="text" placeholder="zadejte text...">
+    <input class="taskDisabled" type="text" placeholder="zadejte text..." disabled>
 
-    <select name="project" id="project">
+    <select name="projectDisabled" id="projectDisabled" disabled>
         <option value="1">project1</option>
         <option value="2">project2</option>
     </select>
@@ -18,6 +18,41 @@
 
 </div>
 <div class="main">
+
+    <dialog class="newRecord">
+        <form action="">
+            <fieldset>
+                <label for="project">Projekt</label>
+                <select name="project" id="project">
+                    <option value="1">project1</option>
+                    <option value="2">project2</option>
+                </select>
+
+                <label for="task">Činnost</label>
+                <input id="task" type="text" placeholder="zadejte text...">
+
+                <label for="day">Den</label>
+                <input id="day" type="date" placeholder="zadejte text...">
+
+                <label for="startHours">Začátek</label>
+                <div>
+                    <input id="startHours" type="number" min="0" max="23" step="1" value="9">
+                    <input id="startMinutes" type="number" min="0" max="59" step="1" value="30">
+                </div>
+                <label for="endHours">Konec</label>
+                <div>
+                    <input id="endHours" type="number" min="0" max="23" step="1" value="9">
+                    <input id="endMinutes" type="number" min="0" max="59" step="1" value="30">
+                </div>
+
+
+
+            </fieldset>
+            <button>☑Přidat</button>
+        </form>
+    </dialog>
+
+
     <div class="tabs">
         <a href="index.html">Přehled</a>
         <a href="index.html">Projekty</a>

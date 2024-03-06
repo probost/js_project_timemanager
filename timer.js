@@ -1,61 +1,72 @@
 const startStopBtn = document.querySelector('.startStopBtn');
 const timerEl = document.querySelector('.timer');
-timerEl.innerText = '0:00:00';
-let savedTime = new Date().setHours(0,0,0,0);
+let savedTime = new Date().setHours(0, 0, 0, 0);
 let running = false;
 let timerTime;
-let startTime = new Date().setHours(0,0,0,0);
-let endTime = new Date().setHours(0,0,0,0);
+let startTime;
 let dif;
+let timerInterval;
 
-startStopBtn.addEventListener("click", () => {
-    if (!running) {
-        //start timer
+timerEl.innerText = '0:00:00'
+
+// Check if there's a saved timer state in localStorage
+const savedTimerState = localStorage.getItem('timerState');
+if (savedTimerState) {
+    const { isRunning, start, saved } = JSON.parse(savedTimerState);
+    if (isRunning) {
         running = true;
-        //save start time
-        startTime = new Date();
-        //save 0
-        savedTime = new Date().setHours(0,0,0,0);
-        toggleIcon()
-        return;
+        startTime = new Date(start);
+        savedTime = saved;
+        startTimer();
     }
-    if (running) {
-        //stop timer
-        running = false;
-        //save timer time
-        savedTime = timerTime;
-        //save end time
-        endTime = new Date();
-        toggleIcon()
-    }
-});
-let intervalId = setInterval(() => {
+}
+
+function updateTimer() {
     if (running) {
         dif = new Date() - startTime;
         timerTime = savedTime + dif;
-        //convert timestamp to date
         const d = new Date(timerTime);
         timerEl.innerText = d.toLocaleTimeString('cs-cz');
     }
-}, 1);
+}
+
+function startTimer() {
+    timerInterval = setInterval(updateTimer, 100);
+    running = true;
+    toggleIcon();
+}
+
+function stopTimer() {
+    running = false;
+    // savedTime = timerTime || 0;
+    clearInterval(timerInterval);
+    toggleIcon();
+}
+
+function startStopTimer() {
+    if (running) {
+        stopTimer();
+    } else {
+        startTime = new Date();
+        // Reset the timer when starting
+        savedTime = new Date().setHours(0,0,0,0);
+        //savedTime = 0; doesn't work
+        timerEl.innerText = '0:00:00';
+        startTimer();
+    }
+
+    // Save the timer state in localStorage
+    const timerState = {
+        isRunning: running,
+        start: startTime,
+        saved: savedTime
+    };
+    localStorage.setItem('timerState', JSON.stringify(timerState));
+}
 
 function toggleIcon() {
-    if (running) {
-        startStopBtn.innerText = '⏹';
-    } else {
-        startStopBtn.innerText = '▶';
-    }
-}
-function getDurationString(){
-   
-   return new Date(savedTime).toLocaleTimeString('cs-cz');
-}
-function getStartTimeString(){
-    return new Date(startTime).toLocaleString('cs-cz');
-}
-function getEndTimeString(){
-   
-    return new Date(endTime).toLocaleString('cs-cz');
-    
+    startStopBtn.innerText = running ? '⏹' : '▶';
 }
 
+startStopBtn.addEventListener('click', startStopTimer);
+timerInterval = setInterval(updateTimer, 100);
