@@ -11,6 +11,7 @@ const recordsTbody = document.querySelector('.recordsTbody');
 const timeTodaySpan = document.querySelector('.timeToday');
 let timeToday;
 let records = [];
+let counter = 0;
 
 
 function addRecord() {
@@ -20,18 +21,15 @@ function addRecord() {
     let totalTime = endTime - startTime
 
     const record = {
-        index: 0,
+        id: counter++,
         task: taskInput.value,
         project: selectedProject,
         start: startTime,
         end: endTime,
         total: totalTime
     }
-    //set id to index in array
-    record.index = records.length;
     records.push(record);
     saveRecordsToLocal();
-
     timeToday += totalTime;
     saveTimeToday()
 }
@@ -91,9 +89,8 @@ function generateHtmlRecords() {
         const deleteBtn = document.createElement('button');
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
-            deleteRecord(r.index);
+            deleteRecord(records.findIndex(record => record.id === r.id));
             timeToday -= r.total;
-            console.log(r.index)
             saveTimeToday();
             generateHtmlRecords();
         })
