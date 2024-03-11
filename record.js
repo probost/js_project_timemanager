@@ -9,11 +9,13 @@ const projectSelect = document.querySelector('#project');
 const newRecordBtn = document.querySelector('.newRecordBtn');
 const recordsTbody = document.querySelector('.recordsTbody');
 const timeTodaySpan = document.querySelector('.timeToday');
-let timeToday;
+let timeToday = 0;
 let records = [];
 let counter = 0;
-
-
+//load and generate html initially
+loadRecordsFromLocal()
+loadTimeToday()
+generateHtmlRecords()
 function addRecord() {
     let selectedProject = projectSelect.options[projectSelect.selectedIndex].innerText;
     let startTime = new Date().setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
@@ -30,13 +32,20 @@ function addRecord() {
     }
     records.push(record);
     saveRecordsToLocal();
+    console.log(totalTime)
     timeToday += totalTime;
+    console.log('adding to timeToday')
+    console.log(timeToday)
     saveTimeToday()
 }
 
 function deleteRecord(index) {
     if (index >= 0 && index < records.length) {
+        console.log(timeToday)
         timeToday -= records[index].total;
+        console.log('subtracted total from timeToday')
+        console.log(timeToday)
+        
         records.splice(index, 1);
         saveRecordsToLocal();
         saveTimeToday()
@@ -70,7 +79,10 @@ function loadTimeToday() {
     if (timeTodayString == null) {
         return;
     }
+    
     timeToday = parseInt(timeTodayString);
+    console.log('loaded timeToday');
+    console.log(timeToday);
 }
 
 function generateHtmlRecords() {
@@ -90,7 +102,6 @@ function generateHtmlRecords() {
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
             deleteRecord(records.findIndex(record => record.id === r.id));
-            timeToday -= r.total;
             saveTimeToday();
             generateHtmlRecords();
         })
@@ -113,10 +124,7 @@ function generateHtmlRecords() {
     })
 }
 
-//load and generate html initially
-loadRecordsFromLocal()
-loadTimeToday()
-generateHtmlRecords()
+
 
 //button shows dialog
 newRecordBtn.addEventListener('click', () => {
