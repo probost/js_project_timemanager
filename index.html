@@ -18,61 +18,80 @@
 
 </div>
 <div class="main">
+    <div class="overview">
+        <dialog class="addRecord">
+            <form action="">
+                <fieldset>
+                    <label for="project">Projekt</label>
+                    <select name="project" id="project">
+                        <option value="1">project1</option>
+                        <option value="2">project2</option>
+                    </select>
 
-    <dialog class="addRecord">
-        <form action="">
-            <fieldset>
-                <label for="project">Projekt</label>
-                <select name="project" id="project">
-                    <option value="1">project1</option>
-                    <option value="2">project2</option>
-                </select>
+                    <label for="task">Činnost</label>
+                    <input id="task" type="text" placeholder="zadejte text...">
 
-                <label for="task">Činnost</label>
-                <input id="task" type="text" placeholder="zadejte text...">
+                    <label for="day">Den</label>
+                    <input id="day" type="date" placeholder="zadejte text...">
 
-                <label for="day">Den</label>
-                <input id="day" type="date" placeholder="zadejte text...">
+                    <label for="startHours">Začátek</label>
+                    <div>
+                        <input id="startHours" type="number" min="0" max="23" step="1" value="9">
+                        <input id="startMinutes" type="number" min="0" max="59" step="1" value="30">
+                    </div>
+                    <label for="endHours">Konec</label>
+                    <div>
+                        <input id="endHours" type="number" min="0" max="23" step="1" value="9">
+                        <input id="endMinutes" type="number" min="0" max="59" step="1" value="30">
+                    </div>
+                </fieldset>
+                <button>☑Přidat</button>
+            </form>
+        </dialog>
 
-                <label for="startHours">Začátek</label>
-                <div>
-                    <input id="startHours" type="number" min="0" max="23" step="1" value="9">
-                    <input id="startMinutes" type="number" min="0" max="59" step="1" value="30">
-                </div>
-                <label for="endHours">Konec</label>
-                <div>
-                    <input id="endHours" type="number" min="0" max="23" step="1" value="9">
-                    <input id="endMinutes" type="number" min="0" max="59" step="1" value="30">
-                </div>
-            </fieldset>
-            <button>☑Přidat</button>
-        </form>
-    </dialog>
+        <div class="tabs">
+            <a href="index.html">Přehled</a>
+            <a href="index.html">Projekty</a>
+        </div>
 
-    <div class="tabs">
-        <a href="index.html">Přehled</a>
-        <a href="index.html">Projekty</a>
+        <div class="stats">
+            <span>Dnes odpracováno <span class="timeToday"></span></span>
+            <button class="newRecordBtn">Nový záznam</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <td>Úkol</td>
+                <td>Projekt</td>
+                <td>Začátek</td>
+                <td>Konec</td>
+                <td>Celkem</td>
+                <td>Akce</td>
+            </tr>
+            </thead>
+            <tbody class="recordsTbody">
+
+            </tbody>
+        </table>
     </div>
+    //hide this
+    <div class="projects">
+        <table>
+            <thead>
+            <tr>
+                <td>Úkol</td>
+                <td>Projekt</td>
+                <td>Začátek</td>
+                <td>Konec</td>
+                <td>Celkem</td>
+                <td>Akce</td>
+            </tr>
+            </thead>
+            <tbody class="projectsTbody">
 
-    <div class="stats">
-        <span>Dnes odpracováno <span class="timeToday"></span></span>
-        <button class="newRecordBtn">Nový záznam</button>
+            </tbody>
+        </table>
     </div>
-    <table>
-        <thead>
-        <tr>
-            <td>Úkol</td>
-            <td>Projekt</td>
-            <td>Začátek</td>
-            <td>Konec</td>
-            <td>Celkem</td>
-            <td>Akce</td>
-        </tr>
-        </thead>
-        <tbody class="recordsTbody">
-
-        </tbody>
-    </table>
 </div>
 <script src="timer.js"></script>
 <script src="record.js"></script>
