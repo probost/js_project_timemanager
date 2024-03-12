@@ -1,12 +1,12 @@
 const addRecordDialog = document.querySelector("dialog.addRecord");
-const form = document.querySelector('form');
+const recordForm = document.querySelector('.addRecord form');
 const startHoursInput = document.querySelector("#startHours");
 const startMinutesInput = document.querySelector("#startMinutes");
 const endHoursInput = document.querySelector("#endHours");
 const endMinutesInput = document.querySelector("#endMinutes");
 const taskInput = document.querySelector('#task');
 const projectSelect = document.querySelector('#project');
-const projectSelectTimer = document.querySelector('#projectTimer');
+const projectTimerSelect = document.querySelector('#projectTimer');
 const taskInputTimer = document.querySelector('.taskTimer');
 const newRecordBtn = document.querySelector('.newRecordBtn');
 const recordsTbody = document.querySelector('.recordsTbody');
@@ -23,8 +23,7 @@ function addRecordManual() {
     let selectedProject = projectSelect.options[projectSelect.selectedIndex];
     let startTime = new Date().setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
     let endTime = new Date().setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
-    let totalTime = new Date(endTime).getTime() - new Date(startTime).getTime();
-    
+    let totalTime = new Date().setHours(endHoursInput.value-startHoursInput.value,endMinutesInput-startMinutesInput,0,0)
     const record = {
         id: counter++,
         task: taskInput.value,
@@ -38,10 +37,10 @@ function addRecordManual() {
     timeToday += totalTime;
     saveTimeToday()
     
-    projectSelectTimer.value = projectSelect.value;
+    projectTimerSelect.value = projectSelect.value;
 }
 function addRecordTimer() {
-    let selectedProject = projectSelectTimer.options[projectSelectTimer.selectedIndex];
+    let selectedProject = projectTimerSelect.options[projectTimerSelect.selectedIndex];
     let startTime = getStartTime();
     let endTime =getEndTime();
     let totalTime = getTotalTime();
@@ -65,8 +64,8 @@ function addRecordTimer() {
 function deleteRecord(id) {
     const indexToDelete = records.findIndex(record => record.id === id);
     if (indexToDelete !== -1) {
-        const deletedRecord = records.splice(indexToDelete, 1)[0];
         timeToday -= records[indexToDelete].total;
+        const deletedRecord = records.splice(indexToDelete, 1)[0];
         saveRecordsToLocal();
         saveTimeToday();
         generateHtmlRecords();
@@ -127,9 +126,9 @@ function generateHtmlRecords() {
 
         taskTd.innerText = r.task;
         projectTd.innerText = r.project;
-        startTd.innerText = new Date(r.start).toLocaleTimeString('cs-cz');
-        endTd.innerText = new Date(r.end).toLocaleTimeString('cs-cz')
-        totalTd.innerText = new Date(r.total).toLocaleTimeString('cs-cz');
+        startTd.innerText = formatDate(new Date(r.start));
+        endTd.innerText = formatDate(new Date(r.end));
+        totalTd.innerText = new Date(r.total).toTimeString().split(' ')[0]
         recordTr.appendChild(taskTd);
         recordTr.appendChild(projectTd);
         recordTr.appendChild(startTd);
@@ -139,8 +138,7 @@ function generateHtmlRecords() {
         actionTd.appendChild(deleteBtn);
 
         recordsTbody.appendChild(recordTr);
-        console.log(timeToday)
-        timeTodaySpan.innerText = new Date(timeToday).toLocaleTimeString('cs-cz');
+        timeTodaySpan.innerText = new Date(timeToday).toTimeString().split(' ')[0]
     })
 }
 
@@ -152,10 +150,20 @@ newRecordBtn.addEventListener('click', () => {
 })
 
 //new record submitted in dialog
-form.addEventListener('submit', (e) => {
+recordForm.addEventListener('submit', (e) => {
     e.preventDefault();
     addRecordManual();
     saveRecordsToLocal();
     generateHtmlRecords();
     addRecordDialog.close();
 })
+
+function formatDate(date) {
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are indexed from 0 for some reason
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${day}.${month}.${year} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+}

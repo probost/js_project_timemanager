@@ -34,28 +34,37 @@ body {
     width: 25%;
     min-width: 50px;
 }
-
-.main .stats {
-    height: 50px;
-    padding: 0 0 10px 0;
-
-    display: flex;
-    justify-content: space-between;
-
-}
-
-.main .stats span {
-    align-self: center;
-}
-
 .main {
     min-height: 400px;
     width: 60%;
     min-width: 300px;
     border: 3px black solid;
 
-    padding: 10px 20px 10px 20px;
+    padding: 0 20px 10px 20px;
 }
+
+.main .tabs{
+    padding: 10px;
+
+}
+.main .tabs a{
+    border: 2px solid black;
+    padding: 10px;
+    cursor: pointer;
+}
+.main .stats {
+    height: 50px;
+    padding: 0 0 10px 0;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.main .stats span {
+    align-self: center;
+}
+
+
 .main dialog {
     height: 400px;
     width: 40%;

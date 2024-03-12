@@ -73,10 +73,10 @@ function getStartTime(){
     return startTime;
 }
 function getEndTime(){
-    return endTime
+    return endTime;
 }
 function getTotalTime(){
-    return timerTime
+    return timerTime;
 }
 
 startStopBtn.addEventListener('click', startStopTimer);
