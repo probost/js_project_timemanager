@@ -6,6 +6,8 @@ const endHoursInput = document.querySelector("#endHours");
 const endMinutesInput = document.querySelector("#endMinutes");
 const taskInput = document.querySelector('#task');
 const projectSelect = document.querySelector('#project');
+const projectSelectTimer = document.querySelector('#projectTimer');
+const taskInputTimer = document.querySelector('.taskTimer');
 const newRecordBtn = document.querySelector('.newRecordBtn');
 const recordsTbody = document.querySelector('.recordsTbody');
 const timeTodaySpan = document.querySelector('.timeToday');
@@ -16,41 +18,60 @@ let counter = 0;
 loadRecordsFromLocal()
 loadTimeToday()
 generateHtmlRecords()
-function addRecord() {
-    let selectedProject = projectSelect.options[projectSelect.selectedIndex].innerText;
+timeTodaySpan.innerText = '0:00:00'
+function addRecordManual() {
+    let selectedProject = projectSelect.options[projectSelect.selectedIndex];
     let startTime = new Date().setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
     let endTime = new Date().setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
-    let totalTime = endTime - startTime
-
+    let totalTime = new Date(endTime).getTime() - new Date(startTime).getTime();
+    
     const record = {
         id: counter++,
         task: taskInput.value,
-        project: selectedProject,
+        project: selectedProject.innerText,
         start: startTime,
         end: endTime,
         total: totalTime
     }
     records.push(record);
     saveRecordsToLocal();
-    console.log(totalTime)
     timeToday += totalTime;
-    console.log('adding to timeToday')
-    console.log(timeToday)
     saveTimeToday()
+    
+    projectSelectTimer.value = projectSelect.value;
+}
+function addRecordTimer() {
+    let selectedProject = projectSelectTimer.options[projectSelectTimer.selectedIndex];
+    let startTime = getStartTime();
+    let endTime =getEndTime();
+    let totalTime = getTotalTime();
+   
+    const record = {
+        id: counter++,
+        task: taskInputTimer.value,
+        project: selectedProject.innerText,
+        start: getStartTime(),
+        end: getEndTime(),
+        total: getTotalTime()
+    }
+    records.push(record);
+    saveRecordsToLocal();
+    timeToday += totalTime;
+    saveTimeToday()
+    generateHtmlRecords();
+
 }
 
-function deleteRecord(index) {
-    if (index >= 0 && index < records.length) {
-        console.log(timeToday)
-        timeToday -= records[index].total;
-        console.log('subtracted total from timeToday')
-        console.log(timeToday)
-        
-        records.splice(index, 1);
+function deleteRecord(id) {
+    const indexToDelete = records.findIndex(record => record.id === id);
+    if (indexToDelete !== -1) {
+        const deletedRecord = records.splice(indexToDelete, 1)[0];
+        timeToday -= records[indexToDelete].total;
         saveRecordsToLocal();
-        saveTimeToday()
-        generateHtmlRecords()
+        saveTimeToday();
+        generateHtmlRecords();
     }
+    
 }
 
 function saveRecordsToLocal() {
@@ -81,8 +102,6 @@ function loadTimeToday() {
     }
     
     timeToday = parseInt(timeTodayString);
-    console.log('loaded timeToday');
-    console.log(timeToday);
 }
 
 function generateHtmlRecords() {
@@ -101,7 +120,7 @@ function generateHtmlRecords() {
         const deleteBtn = document.createElement('button');
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
-            deleteRecord(records.findIndex(record => record.id === r.id));
+            deleteRecord(r.id);
             saveTimeToday();
             generateHtmlRecords();
         })
@@ -110,7 +129,7 @@ function generateHtmlRecords() {
         projectTd.innerText = r.project;
         startTd.innerText = new Date(r.start).toLocaleTimeString('cs-cz');
         endTd.innerText = new Date(r.end).toLocaleTimeString('cs-cz')
-        totalTd.innerText = new Date(r.total).toUTCString().split(' ')[4];
+        totalTd.innerText = new Date(r.total).toLocaleTimeString('cs-cz');
         recordTr.appendChild(taskTd);
         recordTr.appendChild(projectTd);
         recordTr.appendChild(startTd);
@@ -120,7 +139,8 @@ function generateHtmlRecords() {
         actionTd.appendChild(deleteBtn);
 
         recordsTbody.appendChild(recordTr);
-        timeTodaySpan.innerText = new Date(timeToday).toUTCString().split(' ')[4];
+        console.log(timeToday)
+        timeTodaySpan.innerText = new Date(timeToday).toLocaleTimeString('cs-cz');
     })
 }
 
@@ -134,7 +154,7 @@ newRecordBtn.addEventListener('click', () => {
 //new record submitted in dialog
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    addRecord();
+    addRecordManual();
     saveRecordsToLocal();
     generateHtmlRecords();
     addRecordDialog.close();

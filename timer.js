@@ -6,6 +6,7 @@ let timerTime;
 let startTime;
 let dif;
 let timerInterval;
+let endTime;
 
 timerEl.innerText = '0:00:00'
 
@@ -38,9 +39,10 @@ function startTimer() {
 
 function stopTimer() {
     running = false;
-    // savedTime = timerTime || 0;
+    endTime = new Date();
     clearInterval(timerInterval);
     toggleIcon();
+    addRecordTimer();
 }
 
 function startStopTimer() {
@@ -66,6 +68,15 @@ function startStopTimer() {
 
 function toggleIcon() {
     startStopBtn.innerText = running ? '⏹' : '▶';
+}
+function getStartTime(){
+    return startTime;
+}
+function getEndTime(){
+    return endTime
+}
+function getTotalTime(){
+    return timerTime
 }
 
 startStopBtn.addEventListener('click', startStopTimer);
