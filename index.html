@@ -49,7 +49,9 @@
                         <input id="endMinutes" type="number" min="0" max="59" step="1" value="30">
                     </div>
                 </fieldset>
+                <div class="button-flex">
                 <button>☑Přidat</button>
+                </div>
             </form>
         </dialog>
 
@@ -78,24 +80,25 @@
         <dialog class="addProject">
             <form action="">
                 <fieldset>
-                    <label for="projectInput">Činnost</label>
+                    <label for="projectInput">Název projektu</label>
                     <input id="projectInput" type="text" placeholder="zadejte text...">
                 </fieldset>
-                <button>☑Přidat</button>
+                <button>☑Přidat projekt</button>
             </form>
         </dialog>
+
+
         <div class="stats">
             <span>Projekty</span>
             <button class="newProjectBtn">Nový projekt</button>
         </div>
+
+
         <table>
             <thead>
             <tr>
-                <td>Úkol</td>
-                <td>Projekt</td>
-                <td>Začátek</td>
-                <td>Konec</td>
-                <td>Celkem</td>
+                <td>Název projektu</td>
+                <td>Celkový čas</td>
                 <td>Akce</td>
             </tr>
             </thead>
@@ -108,5 +111,6 @@
 <script src="timer.js"></script>
 <script src="record.js"></script>
 <script src="project.js"></script>
+<script src="tabs.js"></script>
 </body>
 </html>

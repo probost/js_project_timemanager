@@ -10,22 +10,23 @@ const projectTimerSelect = document.querySelector('#projectTimer');
 const taskInputTimer = document.querySelector('.taskTimer');
 const newRecordBtn = document.querySelector('.newRecordBtn');
 const recordsTbody = document.querySelector('.recordsTbody');
-const timeTodaySpan = document.querySelector('.timeToday');
+let timeTodaySpan = document.querySelector('.timeToday');
 let timeToday = 0;
 let records = [];
-let counter = 0;
+let recordCounter = 0;
+
 //load and generate html initially
 loadRecordsFromLocal()
+timeTodaySpan.innerText = '0:00:00'
 loadTimeToday()
 generateHtmlRecords()
-timeTodaySpan.innerText = '0:00:00'
 function addRecordManual() {
     let selectedProject = projectSelect.options[projectSelect.selectedIndex];
     let startTime = new Date().setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
     let endTime = new Date().setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
-    let totalTime = new Date().setHours(endHoursInput.value-startHoursInput.value,endMinutesInput-startMinutesInput,0,0)
+    let totalTime =  new Date(endTime -startTime)
     const record = {
-        id: counter++,
+        id: recordCounter++,
         task: taskInput.value,
         project: selectedProject.innerText,
         start: startTime,
@@ -41,12 +42,10 @@ function addRecordManual() {
 }
 function addRecordTimer() {
     let selectedProject = projectTimerSelect.options[projectTimerSelect.selectedIndex];
-    let startTime = getStartTime();
-    let endTime =getEndTime();
     let totalTime = getTotalTime();
    
     const record = {
-        id: counter++,
+        id: recordCounter++,
         task: taskInputTimer.value,
         project: selectedProject.innerText,
         start: getStartTime(),
@@ -120,6 +119,7 @@ function generateHtmlRecords() {
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
             deleteRecord(r.id);
+            timeToday -= r.total;
             saveTimeToday();
             generateHtmlRecords();
         })
@@ -128,7 +128,7 @@ function generateHtmlRecords() {
         projectTd.innerText = r.project;
         startTd.innerText = formatDate(new Date(r.start));
         endTd.innerText = formatDate(new Date(r.end));
-        totalTd.innerText = new Date(r.total).toTimeString().split(' ')[0]
+        totalTd.innerText = formatDate(new Date(r.total));
         recordTr.appendChild(taskTd);
         recordTr.appendChild(projectTd);
         recordTr.appendChild(startTd);
@@ -138,7 +138,9 @@ function generateHtmlRecords() {
         actionTd.appendChild(deleteBtn);
 
         recordsTbody.appendChild(recordTr);
-        timeTodaySpan.innerText = new Date(timeToday).toTimeString().split(' ')[0]
+        //update timeToday
+        timeToday += r.total;
+        timeTodaySpan.innerText = new Date(timeToday).getHours();
     })
 }
 
@@ -166,4 +168,14 @@ function formatDate(date) {
     const minutes = date.getMinutes();
 
     return `${day}.${month}.${year} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+}
+function formatTime(date) {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+}
+
+function clearTaskInputTimer(){
+    taskInputTimer.value = '';
 }

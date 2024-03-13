@@ -43,6 +43,7 @@ function stopTimer() {
     clearInterval(timerInterval);
     toggleIcon();
     addRecordTimer();
+    clearTaskInputTimer();
 }
 
 function startStopTimer() {

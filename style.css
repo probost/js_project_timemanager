@@ -10,7 +10,6 @@ body {
     width: 60%;
     min-width: 300px;
     border: 3px black solid;
-
     padding: 10px 20px 10px 20px;
     display: flex;
     justify-content: center;
@@ -44,11 +43,13 @@ body {
 }
 
 .main .tabs{
-    padding: 10px;
-
+    display: flex;
+    justify-content: left;
+    gap: 5px;
 }
 .main .tabs a{
     border: 2px solid black;
+    border-top:none;
     padding: 10px;
     cursor: pointer;
 }
@@ -72,6 +73,7 @@ body {
 }
 .main dialog button{
     width: 100px;
+    height: 40px;
 }
 .main fieldset{
     display:grid;
@@ -87,6 +89,11 @@ body {
 .main span{
     font-size:1.2em;
 }
+.main .records .button-flex{
+    display: flex;
+   justify-content: center;
+}
+
 table {
     width: 100%;
     border: 3px black solid;
