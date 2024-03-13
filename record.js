@@ -25,6 +25,11 @@ function addRecordManual() {
     let startTime = new Date().setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
     let endTime = new Date().setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
     let totalTime =  new Date(endTime -startTime)
+    //fix incorrect timezone
+    if (totalTime >= 3600000)
+    {
+        totalTime -= 3600000;
+    }
     const record = {
         id: recordCounter++,
         task: taskInput.value,
@@ -36,14 +41,14 @@ function addRecordManual() {
     records.push(record);
     saveRecordsToLocal();
     timeToday += totalTime;
+    console.log(`adding to timeToday ${timeToday}`)
     saveTimeToday()
     
     projectTimerSelect.value = projectSelect.value;
 }
 function addRecordTimer() {
     let selectedProject = projectTimerSelect.options[projectTimerSelect.selectedIndex];
-    let totalTime = getTotalTime();
-   
+
     const record = {
         id: recordCounter++,
         task: taskInputTimer.value,
@@ -54,7 +59,8 @@ function addRecordTimer() {
     }
     records.push(record);
     saveRecordsToLocal();
-    timeToday += totalTime;
+    timeToday += record.total;
+
     saveTimeToday()
     generateHtmlRecords();
 
@@ -64,6 +70,8 @@ function deleteRecord(id) {
     const indexToDelete = records.findIndex(record => record.id === id);
     if (indexToDelete !== -1) {
         timeToday -= records[indexToDelete].total;
+        console.log(`subtracting from timeToday${timeToday}`)
+
         const deletedRecord = records.splice(indexToDelete, 1)[0];
         saveRecordsToLocal();
         saveTimeToday();
@@ -80,7 +88,7 @@ function saveRecordsToLocal() {
 }
 
 function saveTimeToday() {
-    localStorage.setItem('timeToday', timeToday.toString());
+    localStorage.setItem('timeToday', timeToday);
 }
 
 function loadRecordsFromLocal() {
@@ -99,7 +107,8 @@ function loadTimeToday() {
         return;
     }
     
-    timeToday = parseInt(timeTodayString);
+    timeToday = timeTodayString;
+    console.log(`loading timeToday from localStorage ${timeToday}`)
 }
 
 function generateHtmlRecords() {
@@ -119,8 +128,6 @@ function generateHtmlRecords() {
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
             deleteRecord(r.id);
-            timeToday -= r.total;
-            saveTimeToday();
             generateHtmlRecords();
         })
 
@@ -128,7 +135,7 @@ function generateHtmlRecords() {
         projectTd.innerText = r.project;
         startTd.innerText = formatDate(new Date(r.start));
         endTd.innerText = formatDate(new Date(r.end));
-        totalTd.innerText = formatDate(new Date(r.total));
+        totalTd.innerText = formatTime(new Date(r.total));
         recordTr.appendChild(taskTd);
         recordTr.appendChild(projectTd);
         recordTr.appendChild(startTd);
@@ -139,9 +146,8 @@ function generateHtmlRecords() {
 
         recordsTbody.appendChild(recordTr);
         //update timeToday
-        timeToday += r.total;
-        timeTodaySpan.innerText = new Date(timeToday).getHours();
     })
+    timeTodaySpan.innerText = formatTime(new Date(timeToday));
 }
 
 
@@ -172,8 +178,8 @@ function formatDate(date) {
 function formatTime(date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
-
-    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+    const seconds = date.getSeconds()
+    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds :seconds}`;
 }
 
 function clearTaskInputTimer(){

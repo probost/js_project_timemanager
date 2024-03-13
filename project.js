@@ -7,8 +7,8 @@ const projectsTbody = document.querySelector('.projectsTbody');
 let projects = [];
 let projectCounter = 0;
 
-//loadProjectsFromLocal();
-//generateHtmlProjects()
+loadProjectsFromLocal();
+generateHtmlProjects();
 
 function addProject() {
     const project = {
@@ -17,13 +17,16 @@ function addProject() {
         total: 0,
     }
     projects.push(project);
+    addProjectOption(project.id);
     saveProjectsToLocal();
     generateHtmlProjects()
 }
+
 function deleteProject(id) {
     const indexToDelete = projects.findIndex(project => project.id === id);
     if (indexToDelete !== -1) {
         const deletedProject = projects.splice(indexToDelete, 1)[0];
+        deleteProjectOption(id);
         saveProjectsToLocal();
         generateHtmlProjects();
     }
@@ -47,9 +50,9 @@ function loadProjectsFromLocal() {
 function generateHtmlProjects() {
     //remove previously generated html to prevent duplication
     let allTr = document.querySelectorAll(".projectsTbody tr");
-    allTr.forEach((tr) => tr.remove());
+    allTr.forEach(tr => tr.remove());
 
-    projects.forEach((project) => {
+    projects.forEach(project => {
         const projectTr = document.createElement('tr');
 
         const projectTd = document.createElement('td');
@@ -72,6 +75,7 @@ function generateHtmlProjects() {
             deleteProject(project.id);
             addProjectDialog.show();
             generateHtmlProjects();
+
         })
 
         projectTd.innerText = project.project;
@@ -86,6 +90,7 @@ function generateHtmlProjects() {
         projectsTbody.appendChild(projectTr);
         //timeTodaySpan.innerText = new Date(timeToday).toTimeString().split(' ')[0]
     })
+
 }
 
 
@@ -101,5 +106,17 @@ projectForm.addEventListener('submit', (e) => {
     addProject();
     saveProjectsToLocal();
     generateHtmlProjects();
+    projectInput.innerText = '';
     addProjectDialog.close();
 })
+
+function addProjectOption(id){
+let lastIndex = projects.findIndex(project=>project.id === id);
+let lastProject = projects[lastIndex];
+let newOption = document.createElement('option');
+newOption.innerText = lastProject.project;
+projectTimerSelect.appendChild(newOption);
+}
+function deleteProjectOption(id){
+    projectTimerSelect.removeChild(projectTimerSelect.children[id]);
+}
