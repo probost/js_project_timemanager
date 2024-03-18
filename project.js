@@ -7,8 +7,9 @@ const projectsTbody = document.querySelector('.projectsTbody');
 let projects = [];
 let projectCounter = 0;
 
-loadProjectsFromLocal();
-generateHtmlProjects();
+loadProjects();
+renderProjects();
+renderOptions();
 
 function addProject() {
     const project = {
@@ -18,36 +19,38 @@ function addProject() {
     }
     projects.push(project);
     addProjectOption(project.id);
-    saveProjectsToLocal();
-    generateHtmlProjects()
+    saveProjects();
+    renderProjects();
 }
+
 
 function deleteProject(id) {
     const indexToDelete = projects.findIndex(project => project.id === id);
     if (indexToDelete !== -1) {
-        const deletedProject = projects.splice(indexToDelete, 1)[0];
-        deleteProjectOption(id);
-        saveProjectsToLocal();
-        generateHtmlProjects();
+        projects.splice(indexToDelete, 1);
+        deleteProjectOption(indexToDelete);
+        saveProjects();
+        renderProjects();
     }
 }
 
-function saveProjectsToLocal() {
+function saveProjects() {
     //stringify array of projects
-    const projectsJson = JSON.stringify(records);
+    const projectsJson = JSON.stringify(projects);
     //save to local storage
     localStorage.setItem('projects', projectsJson);
 }
-function loadProjectsFromLocal() {
+
+function loadProjects() {
     //load from local storage
     const projectsJson = localStorage.getItem('projects');
     if (projectsJson == null) {
         return;
     }
     //parse back into array of projects
-    records = JSON.parse(projectsJson);
+    projects = JSON.parse(projectsJson);
 }
-function generateHtmlProjects() {
+function renderProjects() {
     //remove previously generated html to prevent duplication
     let allTr = document.querySelectorAll(".projectsTbody tr");
     allTr.forEach(tr => tr.remove());
@@ -65,7 +68,7 @@ function generateHtmlProjects() {
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
             deleteProject(project.id);
-            generateHtmlProjects();
+            renderProjects();
         })
 
         editBtn.innerText = 'upravit';
@@ -74,7 +77,7 @@ function generateHtmlProjects() {
 
             deleteProject(project.id);
             addProjectDialog.show();
-            generateHtmlProjects();
+            renderProjects();
 
         })
 
@@ -88,7 +91,6 @@ function generateHtmlProjects() {
         actionTd.appendChild(editBtn);
 
         projectsTbody.appendChild(projectTr);
-        //timeTodaySpan.innerText = new Date(timeToday).toTimeString().split(' ')[0]
     })
 
 }
@@ -104,19 +106,47 @@ newProjectBtn.addEventListener('click', () => {
 projectForm.addEventListener('submit', (e) => {
     e.preventDefault();
     addProject();
-    saveProjectsToLocal();
-    generateHtmlProjects();
+    saveProjects();
+    renderProjects();
     projectInput.innerText = '';
     addProjectDialog.close();
 })
-
+function renderOptions(){
+    for (let i = 0; i < projects.length; i++){
+        let project = projects[i];
+        addProjectOption(project.id);
+    }
+}
 function addProjectOption(id){
 let lastIndex = projects.findIndex(project=>project.id === id);
 let lastProject = projects[lastIndex];
-let newOption = document.createElement('option');
-newOption.innerText = lastProject.project;
-projectTimerSelect.appendChild(newOption);
+let newOptionTimer = document.createElement('option');
+let newOptionDialog = document.createElement('option');
+newOptionTimer.innerText = lastProject.project;
+newOptionDialog.innerText = lastProject.project;
+projectTimerSelect.appendChild(newOptionTimer);
+projectSelect.appendChild(newOptionDialog);
 }
 function deleteProjectOption(id){
-    projectTimerSelect.removeChild(projectTimerSelect.children[id]);
+    let index = projects.findIndex(project=>project.id === id);
+    if (projects[index]===undefined){
+        return;
+    }
+    let optionElements = projectTimerSelect.children;
+    for (const option of optionElements) {
+        if (option.innerHTML === projects[index].project) {
+            option.remove();
+        }
+    }
+    
+}
+function updateProject(projectName, totalTime){
+    const index = projects.findIndex(project => project.project === projectName);
+    if (projects[index]===undefined){
+        return;
+    }
+    projects[index].total += totalTime;
+
+    saveProjects();
+    renderProjects();
 }

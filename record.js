@@ -4,6 +4,7 @@ const startHoursInput = document.querySelector("#startHours");
 const startMinutesInput = document.querySelector("#startMinutes");
 const endHoursInput = document.querySelector("#endHours");
 const endMinutesInput = document.querySelector("#endMinutes");
+const dateInput = document.querySelector('#date')
 const taskInput = document.querySelector('#task');
 const projectSelect = document.querySelector('#project');
 const projectTimerSelect = document.querySelector('#projectTimer');
@@ -16,19 +17,18 @@ let records = [];
 let recordCounter = 0;
 
 //load and generate html initially
-loadRecordsFromLocal()
+loadRecords()
 timeTodaySpan.innerText = '0:00:00'
 loadTimeToday()
-generateHtmlRecords()
+renderRecords()
 function addRecordManual() {
     let selectedProject = projectSelect.options[projectSelect.selectedIndex];
-    let startTime = new Date().setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
-    let endTime = new Date().setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
-    let totalTime =  new Date(endTime -startTime)
-    //fix incorrect timezone
-    if (totalTime >= 3600000)
-    {
-        totalTime -= 3600000;
+    let startTime = new Date(dateInput.valueAsDate).setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
+    let endTime = new Date(dateInput.valueAsDate).setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
+    let totalTime =  endTime -startTime;
+   
+    if (selectedProject == null){
+        return;
     }
     const record = {
         id: recordCounter++,
@@ -39,9 +39,10 @@ function addRecordManual() {
         total: totalTime
     }
     records.push(record);
-    saveRecordsToLocal();
+    saveRecords();
     timeToday += totalTime;
-    console.log(`adding to timeToday ${timeToday}`)
+    updateProject(record.project,record.total);
+
     saveTimeToday()
     
     projectTimerSelect.value = projectSelect.value;
@@ -58,11 +59,12 @@ function addRecordTimer() {
         total: getTotalTime()
     }
     records.push(record);
-    saveRecordsToLocal();
+    saveRecords();
     timeToday += record.total;
-
+    updateProject(record.project,record.total);
+    
     saveTimeToday()
-    generateHtmlRecords();
+    renderRecords();
 
 }
 
@@ -70,48 +72,45 @@ function deleteRecord(id) {
     const indexToDelete = records.findIndex(record => record.id === id);
     if (indexToDelete !== -1) {
         timeToday -= records[indexToDelete].total;
-        console.log(`subtracting from timeToday${timeToday}`)
-
-        const deletedRecord = records.splice(indexToDelete, 1)[0];
-        saveRecordsToLocal();
+        
+        updateProject(records[indexToDelete].project,records[indexToDelete].total*(-1))
+        
+        records.splice(indexToDelete, 1);
+        saveRecords();
         saveTimeToday();
-        generateHtmlRecords();
+        renderRecords();
     }
     
 }
 
-function saveRecordsToLocal() {
+function saveRecords() {
     //stringify array of records
     const recordsJson = JSON.stringify(records);
     //save to local storage
     localStorage.setItem('records', recordsJson);
 }
 
-function saveTimeToday() {
-    localStorage.setItem('timeToday', timeToday);
-}
 
-function loadRecordsFromLocal() {
-    //load from local storage
+
+function loadRecords() {
     const recordsJson = localStorage.getItem('records');
     if (recordsJson == null) {
         return;
     }
-    //parse back into array of records
     records = JSON.parse(recordsJson);
 }
-
+function saveTimeToday() {
+    let timeTodayJson = JSON.stringify(timeToday);
+    localStorage.setItem('timeToday', timeTodayJson);
+}
 function loadTimeToday() {
     let timeTodayString = localStorage.getItem('timeToday');
-    if (timeTodayString == null) {
-        return;
+    if (timeTodayString) {
+        timeToday = parseInt(timeTodayString);
     }
-    
-    timeToday = timeTodayString;
-    console.log(`loading timeToday from localStorage ${timeToday}`)
 }
 
-function generateHtmlRecords() {
+function renderRecords() {
     //remove previously generated html to prevent duplication
     let allTr = document.querySelectorAll(".recordsTbody tr");
     allTr.forEach((tr) => tr.remove());
@@ -128,7 +127,7 @@ function generateHtmlRecords() {
         deleteBtn.innerText = 'smazat';
         deleteBtn.addEventListener('click', () => {
             deleteRecord(r.id);
-            generateHtmlRecords();
+            renderRecords();
         })
 
         taskTd.innerText = r.task;
@@ -147,22 +146,20 @@ function generateHtmlRecords() {
         recordsTbody.appendChild(recordTr);
         //update timeToday
     })
-    timeTodaySpan.innerText = formatTime(new Date(timeToday));
+    timeTodaySpan.innerText = formatTime(timeToday);
 }
 
 
 
-//button shows dialog
 newRecordBtn.addEventListener('click', () => {
     addRecordDialog.show();
 })
 
-//new record submitted in dialog
 recordForm.addEventListener('submit', (e) => {
     e.preventDefault();
     addRecordManual();
-    saveRecordsToLocal();
-    generateHtmlRecords();
+    saveRecords();
+    renderRecords();
     addRecordDialog.close();
 })
 
@@ -175,12 +172,20 @@ function formatDate(date) {
 
     return `${day}.${month}.${year} ${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
 }
-function formatTime(date) {
+function formatTime(millis) {
+    const date = new Date(millis); // Create a Date object from milliseconds
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    const seconds = date.getSeconds()
-    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds :seconds}`;
+    const seconds = date.getSeconds();
+
+    // Format minutes and seconds with leading zeros if needed
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+
+    // Combine all components into the desired time format
+    return `${hours}:${formattedMinutes}:${formattedSeconds}`;
 }
+
 
 function clearTaskInputTimer(){
     taskInputTimer.value = '';

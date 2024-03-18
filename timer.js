@@ -71,13 +71,13 @@ function toggleIcon() {
     startStopBtn.innerText = running ? '⏹' : '▶';
 }
 function getStartTime(){
-    return startTime;
+    return startTime.getTime();
 }
 function getEndTime(){
-    return endTime;
+    return endTime.getTime();
 }
 function getTotalTime(){
-    return timerTime;
+    return new Date(timerTime).getTime();
 }
 
 startStopBtn.addEventListener('click', startStopTimer);
