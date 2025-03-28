@@ -24,18 +24,18 @@
             <form action="">
                 <fieldset>
                     <label for="project">Project</label>
-                    <select name="project" id="project"></select>
+                    <select required name="project" id="project"></select>
 
                     <label for="task">Task</label>
-                    <input id="task" type="text" placeholder="task name...">
+                    <input required id="task" type="text" placeholder="task name...">
 
                     <label for="date">Day</label>
                     <input id="date" type="date" placeholder="date...">
 
                     <label for="startHours">Start</label>
                     <div>
-                        <input id="startHours" type="number" min="0" max="23" step="1" value="9">
-                        <input id="startMinutes" type="number" min="0" max="59" step="1" value="30">
+                        <input id="startHours" type="time" min="0" max="23" step="1" >
+                        <input id="startMinutes" type="time" min="0" max="59" step="1">
                     </div>
                     <label for="endHours">End</label>
                     <div>
@@ -76,7 +76,7 @@
             <form action="">
                 <fieldset>
                     <label for="projectInput">Project name</label>
-                    <input id="projectInput" type="text" placeholder="zadejte text...">
+                    <input requiredid="projectInput" type="text" placeholder="zadejte text...">
                 </fieldset>
                 <button>Ok</button>
             </form>

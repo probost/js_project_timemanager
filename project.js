@@ -21,6 +21,7 @@ function addProject() {
     addProjectOption(project.id);
     saveProjects();
     renderProjects();
+    renderOptions();
 }
 
 
@@ -31,6 +32,7 @@ function deleteProject(id) {
         deleteProjectOption(indexToDelete);
         saveProjects();
         renderProjects();
+        renderOptions();
     }
 }
 
@@ -111,12 +113,22 @@ projectForm.addEventListener('submit', (e) => {
     projectInput.innerText = '';
     addProjectDialog.close();
 })
-function renderOptions() {
-    for (let i = 0; i < projects.length; i++) {
+
+function renderOptions(){
+    //remove all options in both select elements
+    while (projectTimerSelect.firstChild) {
+        projectTimerSelect.removeChild(projectTimerSelect.firstChild);
+    }
+    while (projectSelect.firstChild) {
+        projectSelect.removeChild(projectSelect.firstChild);
+
+    } for (let i = 0; i < projects.length; i++) {
         let project = projects[i];
         addProjectOption(project.id);
     }
 }
+
+
 function addProjectOption(id) {
     let lastIndex = projects.findIndex(project => project.id === id);
     let lastProject = projects[lastIndex];
@@ -133,9 +145,9 @@ function deleteProjectOption(id) {
     if (projects[index] === undefined) {
         return;
     }
-    let optionElements = projectTimerSelect.children;
+    let optionElements = Array.from(projectTimerSelect.children);;
     for (const option of optionElements) {
-        if (option.innerHTML === projects[index].project) {
+        if (option.innerText === projects[index].project) {
             option.remove();
         }
     }
