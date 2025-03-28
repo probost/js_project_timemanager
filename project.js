@@ -65,13 +65,13 @@ function renderProjects() {
         const deleteBtn = document.createElement('button');
         const editBtn = document.createElement('button');
 
-        deleteBtn.innerText = 'smazat';
+        deleteBtn.innerText = 'delete';
         deleteBtn.addEventListener('click', () => {
             deleteProject(project.id);
             renderProjects();
         })
 
-        editBtn.innerText = 'upravit';
+        editBtn.innerText = 'edit';
         editBtn.addEventListener('click', () => {
             projectInput.innerText = project.project;
 
@@ -82,7 +82,7 @@ function renderProjects() {
         })
 
         projectTd.innerText = project.project;
-        totalTd.innerText = formatDate(new Date(project.total));
+        totalTd.innerText = formatTime(project.total);
         projectTr.appendChild(projectTd);
         projectTr.appendChild(totalTd);
         projectTr.appendChild(actionTd);
@@ -111,25 +111,26 @@ projectForm.addEventListener('submit', (e) => {
     projectInput.innerText = '';
     addProjectDialog.close();
 })
-function renderOptions(){
-    for (let i = 0; i < projects.length; i++){
+function renderOptions() {
+    for (let i = 0; i < projects.length; i++) {
         let project = projects[i];
         addProjectOption(project.id);
     }
 }
-function addProjectOption(id){
-let lastIndex = projects.findIndex(project=>project.id === id);
-let lastProject = projects[lastIndex];
-let newOptionTimer = document.createElement('option');
-let newOptionDialog = document.createElement('option');
-newOptionTimer.innerText = lastProject.project;
-newOptionDialog.innerText = lastProject.project;
-projectTimerSelect.appendChild(newOptionTimer);
-projectSelect.appendChild(newOptionDialog);
+function addProjectOption(id) {
+    let lastIndex = projects.findIndex(project => project.id === id);
+    let lastProject = projects[lastIndex];
+    let newOptionTimer = document.createElement('option');
+    let newOptionDialog = document.createElement('option');
+    newOptionTimer.innerText = lastProject.project;
+    newOptionDialog.innerText = lastProject.project;
+    projectTimerSelect.appendChild(newOptionTimer);
+    projectSelect.appendChild(newOptionDialog);
 }
-function deleteProjectOption(id){
-    let index = projects.findIndex(project=>project.id === id);
-    if (projects[index]===undefined){
+
+function deleteProjectOption(id) {
+    let index = projects.findIndex(project => project.id === id);
+    if (projects[index] === undefined) {
         return;
     }
     let optionElements = projectTimerSelect.children;
@@ -138,14 +139,14 @@ function deleteProjectOption(id){
             option.remove();
         }
     }
-    
+
 }
-function updateProject(projectName, totalTime){
+function updateProject(projectName, totalTaskTime) {
     const index = projects.findIndex(project => project.project === projectName);
-    if (projects[index]===undefined){
+    if (projects[index] === undefined) {
         return;
     }
-    projects[index].total += totalTime;
+    projects[index].total += totalTaskTime;
 
     saveProjects();
     renderProjects();
