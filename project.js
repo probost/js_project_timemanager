@@ -14,25 +14,43 @@ renderOptions();
 function addProject() {
     const project = {
         id: projectCounter++,
-        project: projectInput.value,
+        project_name: projectInput.value,
         total: 0,
     }
     projects.push(project);
     addProjectOption(project.id);
+    renderOptions();
+
     saveProjects();
     renderProjects();
-    renderOptions();
+}
+
+function editProject(id){
+    if (confirm("Are you sure?")){
+        const index = projects.findIndex(project => project.id === id);
+        if (index !== -1) {
+            projects[index].project_name = projectInput.value;
+        }
+        addProjectOption(projects[index].id);
+        renderOptions();
+    
+        saveProjects();
+        renderProjects();
+    }
 }
 
 
 function deleteProject(id) {
-    const indexToDelete = projects.findIndex(project => project.id === id);
-    if (indexToDelete !== -1) {
-        projects.splice(indexToDelete, 1);
-        deleteProjectOption(indexToDelete);
-        saveProjects();
-        renderProjects();
-        renderOptions();
+    if (confirm("Delete project?"))
+    {
+        const index = projects.findIndex(project => project.id === id);
+        if (index !== -1) {
+            projects.splice(index, 1);
+            deleteProjectOption(index);
+            saveProjects();
+            renderProjects();
+            renderOptions();
+        }
     }
 }
 
@@ -75,15 +93,18 @@ function renderProjects() {
 
         editBtn.innerText = 'edit';
         editBtn.addEventListener('click', () => {
-            projectInput.innerText = project.project;
-
-            deleteProject(project.id);
+            projectInput.innerText = project.project_name;
+            
+            //fix this, shouldnt delete:
+            //
+            // deleteProject(project.id);
             addProjectDialog.show();
-            renderProjects();
+            editProject(project.id);
+            // renderProjects();
 
         })
 
-        projectTd.innerText = project.project;
+        projectTd.innerText = project.project_name;
         totalTd.innerText = formatTime(project.total);
         projectTr.appendChild(projectTd);
         projectTr.appendChild(totalTd);

@@ -48,7 +48,7 @@ function stopTimer() {
     endTime = new Date();
     clearInterval(timerInterval);
     toggleIcon();
-    addRecord(taskInputTimer.value, projectTimerSelect.options[projectTimerSelect.selectedIndex], getStartTime(),getEndTime(),getTotalTime() )
+    addRecord(taskInputTimer.value, projectTimerSelect.value, getStartTime(),getEndTime(),getTotalTime() )
     clearTaskInputTimer();
     timerEl.innerText = '0:00:00'
 }
@@ -93,3 +93,15 @@ function getTotalTime() {
 
 startStopBtn.addEventListener('click', startStopTimer);
 timerInterval = setInterval(updateTimer, 100);
+
+function formatTimestamp(timestamp) {
+    // Ensure timestamp is in seconds (convert from ms if needed)
+    timestamp = Math.floor(timestamp / 1000);
+    
+    let hours = Math.floor(timestamp / 3600);
+    let minutes = Math.floor((timestamp % 3600) / 60);
+    let seconds = timestamp % 60;
+
+    // Pad with leading zeros if needed
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}

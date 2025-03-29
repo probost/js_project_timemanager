@@ -52,7 +52,7 @@ body {
     gap: 5px;
 }
 .main .tabs a{
-    border: 2px solid black;
+    border: 3px solid black;
     border-top:none;
     padding: 10px;
     cursor: pointer;
@@ -92,6 +92,9 @@ body {
 }
 .main span{
     font-size:1.2em;
+}
+.main .records .stats button{
+    min-width: 75px ;
 }
 .main .records .button-flex{
     display: flex;

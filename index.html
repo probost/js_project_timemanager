@@ -6,22 +6,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="header">
-    <input class="taskTimer" type="text" placeholder="task name...">
-    <select name="projectTimer" id="projectTimer">
-    </select>
-    <p class="timer"></p>
-    <button class="startStopBtn">▶</button>
-
-</div>
+        <div class="header">
+            <input required class="taskTimer" type="text" placeholder="task name...">
+            <select name="projectTimer" id="projectTimer">
+            </select>
+            <p class="timer"></p>
+            <button class="startStopBtn">▶</button>
+        </div>
 <div class="main">
     <div class="tabs">
         <a id="records">Overview</a>
         <a id="projects">Projects</a>
     </div>
     <div class="records">
-        <dialog class="addRecord">
-            <form action="">
+        <dialog id="recordDialog">
+            <form id="recordForm" action="">
                 <fieldset>
                     <label for="project">Project</label>
                     <select required name="project" id="project"></select>
@@ -29,23 +28,18 @@
                     <label for="task">Task</label>
                     <input required id="task" type="text" placeholder="task name...">
 
-                    <label for="date">Day</label>
-                    <input id="date" type="date" placeholder="date...">
-
                     <label for="startHours">Start</label>
                     <div>
-                        <input id="startHours" type="time" min="0" max="23" step="1" >
-                        <input id="startMinutes" type="time" min="0" max="59" step="1">
+                        <input required id=startDateTimeInput type="datetime-local">
                     </div>
                     <label for="endHours">End</label>
                     <div>
-                        <input id="endHours" type="number" min="0" max="23" step="1" value="9">
-                        <input id="endMinutes" type="number" min="0" max="59" step="1" value="30">
+                        <input required id=endDateTimeInput type="datetime-local">
                     </div>
                 </fieldset>
                 <div class="button-flex">
                 <button>Add</button>
-                <button class="cancelBtn">Cancel</button>
+                <button id="recordCancelBtn">Cancel</button>
                 </div>
             </form>
         </dialog>
@@ -76,7 +70,7 @@
             <form action="">
                 <fieldset>
                     <label for="projectInput">Project name</label>
-                    <input requiredid="projectInput" type="text" placeholder="zadejte text...">
+                    <input required id="projectInput" type="text" placeholder="zadejte text...">
                 </fieldset>
                 <button>Ok</button>
             </form>

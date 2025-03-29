@@ -1,61 +1,66 @@
-const addRecordDialog = document.querySelector("dialog.addRecord");
-const recordForm = document.querySelector('.addRecord form');
-const startHoursInput = document.querySelector("#startHours");
-const startMinutesInput = document.querySelector("#startMinutes");
-const endHoursInput = document.querySelector("#endHours");
-const endMinutesInput = document.querySelector("#endMinutes");
-const dateInput = document.querySelector('#date')
-taskInput = document.querySelector('#task');
-const projectSelect = document.querySelector('#project');
-const projectTimerSelect = document.querySelector('#projectTimer');
-const taskInputTimer = document.querySelector('.taskTimer');
-const newRecordBtn = document.querySelector('.newRecordBtn');
-const cancelBtn = document.querySelector('.cancelBtn');
-const recordsTbody = document.querySelector('.recordsTbody');
-let timeTodaySpan = document.querySelector('.timeToday');
+const addRecordDialog = document.querySelector("dialog#recordDialog");
+const recordForm = document.querySelector('form#recordForm');
+
+
+const startDateTimeInput = document.querySelector("input#startDateTimeInput");
+const endDateTimeInput = document.querySelector("input#endDateTimeInput");
+
+const dateInput = document.querySelector('input#date')
+taskInput = document.querySelector('input#task');
+const projectSelect = document.querySelector('select#project');
+const projectTimerSelect = document.querySelector('select#projectTimer');
+const taskInputTimer = document.querySelector('input.taskTimer');
+const newRecordBtn = document.querySelector('button.newRecordBtn');
+const recordCancelBtn = document.querySelector('#recordCancelBtn');
+const recordsTbody = document.querySelector('tbody.recordsTbody');
+let timeTodaySpan = document.querySelector('span.timeToday');
 let timeToday = 0;
 let records = [];
-let recordCounter = 0;
+let idCounter = 0;
 
-startTime = new Date(dateInput.valueAsDate).setHours(startHoursInput.value, startMinutesInput.value, 0, 0);
-endTime = new Date(dateInput.valueAsDate).setHours(endHoursInput.value, endMinutesInput.value, 0, 0);
 //load and generate html initially
 loadRecords()
 loadTimeToday()
 renderRecords()
 
-function addRecord(task, project, start, end, total) {
+function addRecord(taskName, projectName, start, end) {
 
     const record = {
-        id: recordCounter++,
-        task: task.value,
-        project: project.innerText,
+        id: idCounter++,
+        task_name: taskName,
+        project_name: projectName,
         start: start,
         end: end,
-        total: total
+        total:  end > start ? (end - start) : 0
     }
-    timeToday += record.total;
-    saveTimeToday()
+    
 
     records.push(record)
     saveRecords();
 
     updateProject(record.project, record.total);
     renderRecords();
+
+    addToTimeToday(record.total);
+    saveTimeToday();
+    renderTimeToday();
 }
 
 function deleteRecord(id) {
-    const indexToDelete = records.findIndex(record => record.id === id);
+    if (confirm("Delete record?")){
+        const indexToDelete = records.findIndex(record => record.id === id);
     if (indexToDelete !== -1) {
-        timeToday -= records[indexToDelete].total;
+        addToTimeToday(-records[indexToDelete].total)
+        saveTimeToday();
 
         updateProject(records[indexToDelete].project, records[indexToDelete].total * (-1))
 
         records.splice(indexToDelete, 1);
         saveRecords();
-        saveTimeToday();
         renderRecords();
     }
+    }
+    
 
 }
 
@@ -74,19 +79,29 @@ function loadRecords() {
         return;
     }
     records = JSON.parse(recordsJson);
+
 }
 function saveTimeToday() {
     let timeTodayJson = JSON.stringify(timeToday);
     localStorage.setItem('timeToday', timeTodayJson);
 }
 function loadTimeToday() {
-    timeTodaySpan.innerText = '0:00:00'
 
     let timeTodayString = localStorage.getItem('timeToday');
     if (timeTodayString) {
         timeToday = parseInt(timeTodayString);
+    }else{
+    timeTodaySpan.innerText = '0:00:00'
     }
 }
+
+function addToTimeToday(n){
+    if (timeToday += n >= 0) timeToday += n;
+}
+function renderTimeToday(){
+    timeTodaySpan.innerText = formatTimestamp(timeToday);
+}
+
 
 function renderRecords() {
     //remove previously generated html to prevent duplication
@@ -108,11 +123,11 @@ function renderRecords() {
             renderRecords();
         })
 
-        taskTd.innerText = r.task;
-        projectTd.innerText = r.project;
+        taskTd.innerText = r.task_name;
+        projectTd.innerText = r.project_name;
         startTd.innerText = formatDate(new Date(r.start));
         endTd.innerText = formatDate(new Date(r.end));
-        totalTd.innerText = formatTime(new Date(r.total));
+        totalTd.innerText = formatTimestamp(new Date(r.total));
         recordTr.appendChild(taskTd);
         recordTr.appendChild(projectTd);
         recordTr.appendChild(startTd);
@@ -123,8 +138,9 @@ function renderRecords() {
 
         recordsTbody.appendChild(recordTr);
         //update timeToday
+        
     })
-    timeTodaySpan.innerText = formatTime(timeToday);
+    renderTimeToday();
 }
 
 
@@ -133,14 +149,14 @@ newRecordBtn.addEventListener('click', () => {
     addRecordDialog.show();
 })
 
-cancelBtn.addEventListener('click', (e) => {
+recordCancelBtn.addEventListener('click', (e) => {
     e.preventDefault();
     addRecordDialog.close();
 })
 
 recordForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    addRecord(taskInput, projectSelect.options[projectSelect.selectedIndex], new Date(dateInput.valueAsDate).setHours(startHoursInput.value, startMinutesInput.value, 0, 0), new Date(dateInput.valueAsDate).setHours(endHoursInput.value, endMinutesInput.value, 0, 0), endTime - startTime)
+    addRecord(taskInput.value, projectSelect.options[projectSelect.selectedIndex].innerText, startDateTimeInput.valueAsNumber, endDateTimeInput.valueAsNumber)
     saveRecords();
     renderRecords();
     addRecordDialog.close();
