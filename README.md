@@ -1,11 +1,11 @@
 ## Simple local web app to track projects & tasks
 A simple project to learn basic JavaScript while creating a web application for tracking time spent on different tasks within projects.
-## functions
+## Functions
 - all data is saved in localStorage
 - each project can be assigned tasks
 - records can be added manually through a form or automatically using a timer
 - a project record must exist in order to create task records!
-## future features
+## Future features
 - 'stats' tab to oversee time spent on each project over a period of time (7d / mo /year)
 - dynamic timer in document.title
 - pausing the timer
