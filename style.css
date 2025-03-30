@@ -4,6 +4,7 @@ body {
     flex-direction: column;
     gap: 20px;
     align-items: center;
+    font-size: 1rem;
 }
 .header {
     height: 50px;
@@ -124,5 +125,30 @@ td button{
 tbody tr:nth-child(odd) {
     background: lightgray;
 }
-/*https://sass-lang.com/*/
-/*https://www.jetbrains.com/help/phpstorm/transpiling-sass-less-and-scss-to-css.html*/
+
+@media (max-width: 1024px) {
+    body {
+        font-size: 16px; /* Standard font size for tablets */
+    }
+
+    .taskTimer, .startStopBtn, .newRecordBtn {
+        font-size: 18px;
+        padding: 14px 28px;
+    }
+
+    .tabs a {
+        font-size: 18px;
+        padding: 16px;
+    }
+
+    table td, table th {
+        font-size: 16px;
+        padding: 14px; /* Adjust for larger screens */
+    }
+
+    .header input, .header select {
+        font-size: 16px;
+        padding: 14px;
+    }
+}
+

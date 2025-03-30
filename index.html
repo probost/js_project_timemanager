@@ -66,22 +66,32 @@
         </table>
     </div>
     <div class="projects">
-        <dialog class="addProject">
-            <form action="">
+        <dialog id="addProjectDialog">
+            <form action="" id="addProjectForm">
                 <fieldset>
-                    <label for="projectInput">Project name</label>
-                    <input required id="projectInput" type="text" placeholder="zadejte text...">
+                    <label for="addProjectInput">Project name</label>
+                    <input required id="addProjectInput" type="text" placeholder="zadejte text...">
                 </fieldset>
                 <button>Ok</button>
             </form>
         </dialog>
 
+        <dialog id="editProjectDialog">
+            <form action="" id="editProjectForm">
+                <fieldset>
+                    <label for="editProjectInput">Project name</label>
+                    <input required id="editProjectInput" type="text" placeholder="zadejte text...">
+
+                    <a href="" id="editProjectID"></a>
+                </fieldset>
+                <button>Ok</button>
+            </form>
+        </dialog>
 
         <div class="stats">
             <span>Projects</span>
             <button class="newProjectBtn">New project</button>
         </div>
-
 
         <table>
             <thead>

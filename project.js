@@ -1,9 +1,15 @@
-
-const addProjectDialog = document.querySelector("dialog.addProject");
-const projectForm = document.querySelector('.addProject form');
-const projectInput = document.querySelector('#projectInput');
 const newProjectBtn = document.querySelector('.newProjectBtn');
 const projectsTbody = document.querySelector('.projectsTbody');
+
+
+const addProjectDialog = document.querySelector("#addProjectDialog");
+const addProjectForm = document.querySelector('#addProjectForm');
+const addProjectInput = document.querySelector('#addProjectInput');
+
+const editProjectDialog = document.querySelector("#editProjectDialog");
+const editProjectForm = document.querySelector('#editProjectForm');
+const editProjectInput = document.querySelector('#editProjectInput');
+
 let projects = [];
 let projectCounter = 0;
 
@@ -14,29 +20,31 @@ renderOptions();
 function addProject() {
     const project = {
         id: projectCounter++,
-        project_name: projectInput.value,
+        project_name: addProjectInput.value,
         total: 0,
     }
     projects.push(project);
-    addProjectOption(project.id);
-    renderOptions();
-
     saveProjects();
+    addProjectOption(project.id);
+    
+    renderOptions();
     renderProjects();
 }
 
 function editProject(id){
-    if (confirm("Are you sure?")){
+        
+        //array index can be different to id, find index
         const index = projects.findIndex(project => project.id === id);
+
         if (index !== -1) {
-            projects[index].project_name = projectInput.value;
+            //edit the project attributes
+            projects[index].project_name = editProjectInput.value;
         }
-        addProjectOption(projects[index].id);
-        renderOptions();
-    
         saveProjects();
+        addProjectOption(projects[index].id);
+        
+        renderOptions();
         renderProjects();
-    }
 }
 
 
@@ -46,10 +54,12 @@ function deleteProject(id) {
         const index = projects.findIndex(project => project.id === id);
         if (index !== -1) {
             projects.splice(index, 1);
-            deleteProjectOption(index);
+            
             saveProjects();
-            renderProjects();
+            deleteProjectOption(id);
+            
             renderOptions();
+            renderProjects();
         }
     }
 }
@@ -69,6 +79,11 @@ function loadProjects() {
     }
     //parse back into array of projects
     projects = JSON.parse(projectsJson);
+
+     // Update projectCounter to avoid duplicate IDs
+     if (projects.length > 0) {
+        projectCounter = Math.max(...projects.map(p => p.id)) + 1;
+    }
 }
 function renderProjects() {
     //remove previously generated html to prevent duplication
@@ -77,13 +92,12 @@ function renderProjects() {
 
     projects.forEach(project => {
         const projectTr = document.createElement('tr');
-
         const projectTd = document.createElement('td');
         const totalTd = document.createElement('td');
         const actionTd = document.createElement('td');
-
         const deleteBtn = document.createElement('button');
         const editBtn = document.createElement('button');
+        editBtn.innerText = 'edit';
 
         deleteBtn.innerText = 'delete';
         deleteBtn.addEventListener('click', () => {
@@ -91,21 +105,18 @@ function renderProjects() {
             renderProjects();
         })
 
-        editBtn.innerText = 'edit';
-        editBtn.addEventListener('click', () => {
-            projectInput.innerText = project.project_name;
-            
-            //fix this, shouldnt delete:
-            //
-            // deleteProject(project.id);
-            addProjectDialog.show();
-            editProject(project.id);
-            // renderProjects();
 
+        editBtn.addEventListener('click', () => {
+            
+            
+            editProjectInput.value = project.project_name;
+            editProjectForm.dataset.projectId = project.id; //store id in dataset of form
+            editProjectDialog.show();
         })
+        
 
         projectTd.innerText = project.project_name;
-        totalTd.innerText = formatTime(project.total);
+        totalTd.innerText = formatTimestamp(project.total);
         projectTr.appendChild(projectTd);
         projectTr.appendChild(totalTd);
         projectTr.appendChild(actionTd);
@@ -122,18 +133,23 @@ function renderProjects() {
 
 //button shows dialog
 newProjectBtn.addEventListener('click', () => {
+       
     addProjectDialog.show();
+    addProjectInput.value = '';
 })
-
-//new record submitted in dialog
-projectForm.addEventListener('submit', (e) => {
+addProjectForm.addEventListener('submit', (e) => {
     e.preventDefault();
     addProject();
-    saveProjects();
-    renderProjects();
-    projectInput.innerText = '';
     addProjectDialog.close();
 })
+
+editProjectForm.addEventListener('submit',(e)=>{
+    e.preventDefault()
+    const id = parseInt(editProjectForm.dataset.projectId);
+    editProject(id);
+    editProjectDialog.close();
+})
+
 
 function renderOptions(){
     //remove all options in both select elements
@@ -155,8 +171,8 @@ function addProjectOption(id) {
     let lastProject = projects[lastIndex];
     let newOptionTimer = document.createElement('option');
     let newOptionDialog = document.createElement('option');
-    newOptionTimer.innerText = lastProject.project;
-    newOptionDialog.innerText = lastProject.project;
+    newOptionTimer.innerText = lastProject.project_name;
+    newOptionDialog.innerText = lastProject.project_name;
     projectTimerSelect.appendChild(newOptionTimer);
     projectSelect.appendChild(newOptionDialog);
 }
@@ -168,14 +184,14 @@ function deleteProjectOption(id) {
     }
     let optionElements = Array.from(projectTimerSelect.children);;
     for (const option of optionElements) {
-        if (option.innerText === projects[index].project) {
+        if (option.innerText === projects[index].project_name) {
             option.remove();
         }
     }
 
 }
 function updateProject(projectName, totalTaskTime) {
-    const index = projects.findIndex(project => project.project === projectName);
+    const index = projects.findIndex(project => project.project_name === projectName);
     if (projects[index] === undefined) {
         return;
     }

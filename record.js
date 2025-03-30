@@ -43,7 +43,6 @@ function addRecord(taskName, projectName, start, end) {
 
     addToTimeToday(record.total);
     saveTimeToday();
-    renderTimeToday();
 }
 
 function deleteRecord(id) {
@@ -97,6 +96,7 @@ function loadTimeToday() {
 
 function addToTimeToday(n){
     if (timeToday += n >= 0) timeToday += n;
+    renderTimeToday();
 }
 function renderTimeToday(){
     timeTodaySpan.innerText = formatTimestamp(timeToday);
